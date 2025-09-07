@@ -1,4 +1,4 @@
-package bytesEx
+package main
 
 import (
 	"bytes"

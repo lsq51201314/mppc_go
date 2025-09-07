@@ -1,4 +1,4 @@
-package mppc
+package main
 
 import (
 	"encoding/binary"
@@ -7,13 +7,13 @@ import (
 func Compress(buffer []byte) []byte {
 	array := make([]byte, 16384)
 	num := len(buffer)
-	destLen := int(CompressBound(uint32(num)))
+	destLen := int(compressBound(uint32(num)))
 	var success bool
 
 	if num > 8192 {
-		success = Compress2(array, &destLen, buffer, num) == 0
+		success = compress2(array, &destLen, buffer, num) == 0
 	} else {
-		success = CompressSingle(array, &destLen, buffer, num) == 0
+		success = compressSingle(array, &destLen, buffer, num) == 0
 	}
 
 	if !success {
@@ -22,11 +22,11 @@ func Compress(buffer []byte) []byte {
 	return array[:destLen]
 }
 
-func CompressBound(sourcelen uint32) uint32 {
+func compressBound(sourcelen uint32) uint32 {
 	return sourcelen*9/8 + 1 + 2 + 3
 }
 
-func CompressSingle(dest []byte, destLen *int, source []byte, sourceLen int) int {
+func compressSingle(dest []byte, destLen *int, source []byte, sourceLen int) int {
 	num := mppcCompress(source, dest, sourceLen, 0, 0)
 	if num > 0 && num <= *destLen {
 		*destLen = num
@@ -35,7 +35,7 @@ func CompressSingle(dest []byte, destLen *int, source []byte, sourceLen int) int
 	return -1
 }
 
-func Compress2(dest []byte, destLen *int, source []byte, sourceLen int) int {
+func compress2(dest []byte, destLen *int, source []byte, sourceLen int) int {
 	num := *destLen
 	*destLen = 0
 	var num2 uint32 = 0

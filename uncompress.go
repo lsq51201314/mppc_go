@@ -1,4 +1,4 @@
-package mppc
+package main
 
 import (
 	"encoding/binary"
